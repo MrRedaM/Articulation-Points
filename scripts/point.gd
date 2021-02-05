@@ -5,6 +5,17 @@ var index
 
 signal start_link(point)
 signal apply_link(point)
+signal mouse_entred_point(point)
+signal mouse_exited_point(point)
+
+func set_focus(is_focused):
+	var current_alpha = modulate.a
+	if is_focused:
+		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 1), 0.7, Tween.TRANS_EXPO)
+		$OpacityTween.start()
+	else:
+		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.4), 0.7, Tween.TRANS_EXPO)
+		$OpacityTween.start()
 
 func _draw():
 	var angle = (2 * PI) / Globals.nb_points
@@ -28,3 +39,11 @@ func _on_Label_gui_input(event):
 				emit_signal("apply_link", self)
 			else:
 				emit_signal("start_link", self)
+
+
+func _on_mouse_entered():
+	emit_signal("mouse_entred_point", self)
+
+
+func _on_mouse_exited():
+	emit_signal("mouse_exited_point", self)

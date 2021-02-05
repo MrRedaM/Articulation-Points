@@ -26,4 +26,8 @@ valign = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="OpacityTween" type="Tween" parent="."]
 [connection signal="gui_input" from="Label" to="." method="_on_Label_gui_input"]
+[connection signal="mouse_entered" from="Label" to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Label" to="." method="_on_mouse_exited"]
