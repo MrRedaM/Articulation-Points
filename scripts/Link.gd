@@ -11,7 +11,7 @@ func set_focus(is_focused):
 		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 1), 0.7, Tween.TRANS_EXPO)
 		$OpacityTween.start()
 	else:
-		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.2), 0.7, Tween.TRANS_EXPO)
+		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.1), 0.7, Tween.TRANS_EXPO)
 		$OpacityTween.start()
 
 func _draw():

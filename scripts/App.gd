@@ -1,10 +1,15 @@
-extends Node2D
+extends Control
 
 var nb_points : int = 0
 
 const Point = preload("res://scenes/point.tscn") 
+const PointItem = preload("res://scenes/PointElement.tscn")
 const Link = preload("res://scenes/Link.tscn")
 
+onready var points = $Graph/Points
+onready var poointList = $HBoxContainer/Panel/MarginContainer/VBoxContainer/Panel/ScrollContainer/PointList
+onready var links = $Graph/Links
+onready var disabled = $Graph/Disabled
 
 func _draw():
 	if Globals.linking:
@@ -13,8 +18,42 @@ func _draw():
 func _process(delta):
 	_update_globals()
 	update()
+	if Input.is_action_just_pressed("right_click"):
+		Globals.linking = false
+
+func get_articulation_points():
+	var result = []
+	for p in points.get_children():
+		#remove point and links
+		points.remove_child(p)
+		disabled.add_child(p)
+		for l in _get_links(p):
+			links.remove_child(l)
+			disabled.add_child(l)
+		
+		for p1 in points.get_children():
+			if not _is_accessible_from_all(p1):
+				result.append(p)
+				break
+		
+		#get back point and links
+		disabled.remove_child(p)
+		points.add_child(p)
+		for l in disabled.get_children():
+			disabled.remove_child(l)
+			links.add_child(l)
+	return result
+
+func _is_accessible_from_all(point):
+	for p in points.get_children():
+		if p == point:
+			continue
+		if not _is_accessible(p, point, []):
+			return false
+	return true
 
 func _add_point(label):
+	_reset_highlights()
 	var point = Point.instance()
 	point.label = label
 	point.index = Globals.nb_points
@@ -22,20 +61,28 @@ func _add_point(label):
 	point.connect("apply_link", self, "_on_apply_link")
 	point.connect("mouse_entred_point", self, "_on_mouse_entred_point")
 	point.connect("mouse_exited_point", self, "_on_mouse_exited_point")
-	$Points.add_child(point)
+	points.add_child(point)
 	Globals.nb_points += 1
+	
+	var item = PointItem.instance()
+	item.label = label
+	poointList.add_child(item)
 
 func _add_link(start, end):
-	for l in $Links.get_children():
+	_reset_highlights()
+	for l in links.get_children():
 		if (l.start == start and l.end == end) or (l.start == end and l.end == start):
 			return
 	var link = Link.instance()
 	link.start = start
 	link.end = end
-	$Links.add_child(link)
+	links.add_child(link)
 
 func _remove_point():
-	pass
+	_reset_highlights()
+
+func _remove_link(link):
+	_reset_highlights()
 
 func _on_start_link(start_point):
 	Globals.linking = true
@@ -47,18 +94,18 @@ func _on_apply_link(end_point):
 
 func _on_mouse_entred_point(point):
 	var hided_points = []
-	for p in $Points.get_children():
+	for p in points.get_children():
 		if not _is_accessible(p, point, []) and p != point:
 			p.set_focus(false)
 			hided_points.append(p)
-	for l in $Links.get_children():
+	for l in links.get_children():
 		if l.start in hided_points or l.end in hided_points:
 			l.set_focus(false)
 
 func _on_mouse_exited_point(point):
-	for p in $Points.get_children():
+	for p in points.get_children():
 		p.set_focus(true)
-	for l in $Links.get_children():
+	for l in links.get_children():
 		l.set_focus(true)
 
 func _is_accessible(src, dest, excluded):
@@ -73,11 +120,17 @@ func _is_accessible(src, dest, excluded):
 		if _is_accessible(next, dest, excluded):
 			return true
 	return false
-	
+
+func _get_links(point):
+	var result = []
+	for l in links.get_children():
+		if l.start == point or l.end == point:
+			result.append(l)
+	return result
 
 func _get_next_points(point):
 	var result = []
-	for l in $Links.get_children():
+	for l in links.get_children():
 		if l.start == point:
 			result.append(l.end)
 		elif l.end == point:
@@ -89,4 +142,12 @@ func _on_add_point_pressed():
 
 func _update_globals():
 	Globals.center = Vector2(get_viewport_rect().size.x / 2, get_viewport_rect().size.y / 2)
-	Globals.radius = Vector2(get_viewport_rect().size.y / 2 - 100, 0)
+	Globals.radius = Vector2(get_viewport_rect().size.y / 2 - 48, 0)
+
+func _reset_highlights():
+	for p in points.get_children():
+		p.set_highlight(false)
+
+func _on_articulation_pressed():
+	for p in get_articulation_points():
+		p.set_highlight(true)

@@ -1,21 +1,45 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://scripts/App.gd" type="Script" id=1]
 [ext_resource path="res://assets/fonts/normal.tres" type="DynamicFont" id=2]
+[ext_resource path="res://assets/styles/panel_style.tres" type="StyleBox" id=3]
+[ext_resource path="res://assets/fonts/button_font.tres" type="DynamicFont" id=4]
+[ext_resource path="res://assets/styles/button_style.tres" type="StyleBox" id=5]
+[ext_resource path="res://assets/styles/button_hover_style.tres" type="StyleBox" id=6]
 
-[node name="App" type="Node2D"]
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.988235, 0.988235, 0.988235, 1 )
+
+[node name="App" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
 script = ExtResource( 1 )
-
-[node name="Links" type="Node" parent="."]
-
-[node name="Points" type="Node" parent="."]
-
-[node name="GUI" type="Control" parent="."]
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MarginContainer" type="MarginContainer" parent="GUI"]
+[node name="Graph" type="Node2D" parent="."]
+
+[node name="Links" type="Node" parent="Graph"]
+
+[node name="Points" type="Node" parent="Graph"]
+
+[node name="Disabled" type="Node" parent="Graph"]
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="HBoxContainer"]
+margin_right = 256.0
+margin_bottom = 768.0
+rect_min_size = Vector2( 256, 0 )
+custom_styles/panel = ExtResource( 3 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 custom_constants/margin_right = 16
@@ -26,19 +50,144 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GUI/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Panel/MarginContainer"]
 margin_left = 16.0
 margin_top = 16.0
-margin_right = 234.0
-margin_bottom = 72.0
+margin_right = 241.0
+margin_bottom = 752.0
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GUI/MarginContainer/VBoxContainer"]
-margin_right = 218.0
-margin_bottom = 56.0
-
-[node name="Button" type="Button" parent="GUI/MarginContainer/VBoxContainer/HBoxContainer"]
-margin_right = 218.0
-margin_bottom = 56.0
+[node name="Label" type="Label" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+margin_right = 225.0
+margin_bottom = 50.0
 custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.137255, 0.14902, 0.152941, 1 )
+text = "Points"
+align = 1
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+margin_top = 58.0
+margin_right = 225.0
+margin_bottom = 595.0
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 1 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PointList" type="VBoxContainer" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer/Panel/ScrollContainer"]
+
+[node name="Button" type="Button" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+margin_top = 603.0
+margin_right = 225.0
+margin_bottom = 642.0
+size_flags_horizontal = 3
+custom_styles/hover = ExtResource( 6 )
+custom_styles/normal = ExtResource( 5 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color = Color( 0.137255, 0.14902, 0.152941, 1 )
+custom_colors/font_color_hover = Color( 0.929412, 0.933333, 0.937255, 1 )
 text = "Add Point"
-[connection signal="pressed" from="GUI/MarginContainer/VBoxContainer/HBoxContainer/Button" to="." method="_on_add_point_pressed"]
+
+[node name="Button2" type="Button" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+margin_top = 650.0
+margin_right = 225.0
+margin_bottom = 689.0
+size_flags_horizontal = 3
+custom_styles/hover = ExtResource( 6 )
+custom_styles/normal = ExtResource( 5 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color = Color( 0.137255, 0.14902, 0.152941, 1 )
+text = "Delete all points"
+
+[node name="Button3" type="Button" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+margin_top = 697.0
+margin_right = 225.0
+margin_bottom = 736.0
+size_flags_horizontal = 3
+custom_styles/hover = ExtResource( 6 )
+custom_styles/normal = ExtResource( 5 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color = Color( 0.137255, 0.14902, 0.152941, 1 )
+text = "Articulation points"
+
+[node name="Control" type="Control" parent="HBoxContainer"]
+margin_left = 260.0
+margin_right = 1106.0
+margin_bottom = 768.0
+size_flags_horizontal = 3
+
+[node name="Panel2" type="Panel" parent="HBoxContainer"]
+margin_left = 1110.0
+margin_right = 1366.0
+margin_bottom = 768.0
+rect_min_size = Vector2( 256, 0 )
+custom_styles/panel = ExtResource( 3 )
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Panel2"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = 16
+custom_constants/margin_top = 16
+custom_constants/margin_left = 16
+custom_constants/margin_bottom = 16
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer/Panel2/MarginContainer"]
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 240.0
+margin_bottom = 752.0
+custom_constants/separation = 8
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer2"]
+margin_right = 224.0
+margin_bottom = 50.0
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 0.137255, 0.14902, 0.152941, 1 )
+text = "Links"
+align = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer2"]
+margin_top = 58.0
+margin_right = 224.0
+margin_bottom = 689.0
+size_flags_vertical = 3
+custom_styles/panel = SubResource( 1 )
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer2/Panel"]
+margin_top = 8.0
+margin_right = 240.0
+margin_bottom = 594.0
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer2/Panel/ScrollContainer"]
+
+[node name="Button3" type="Button" parent="HBoxContainer/Panel2/MarginContainer/VBoxContainer2"]
+margin_top = 697.0
+margin_right = 224.0
+margin_bottom = 736.0
+size_flags_horizontal = 3
+custom_styles/hover = ExtResource( 6 )
+custom_styles/normal = ExtResource( 5 )
+custom_fonts/font = ExtResource( 4 )
+custom_colors/font_color = Color( 0.137255, 0.14902, 0.152941, 1 )
+text = "Delete all links"
+[connection signal="pressed" from="HBoxContainer/Panel/MarginContainer/VBoxContainer/Button" to="." method="_on_add_point_pressed"]
+[connection signal="pressed" from="HBoxContainer/Panel/MarginContainer/VBoxContainer/Button3" to="." method="_on_articulation_pressed"]

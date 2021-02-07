@@ -1,5 +1,8 @@
 extends Sprite
 
+const blue_circle = preload("res://assets/circle_blue.png")
+const black_circle = preload("res://assets/circle.png")
+
 export var label : String
 var index
 
@@ -14,8 +17,14 @@ func set_focus(is_focused):
 		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 1), 0.7, Tween.TRANS_EXPO)
 		$OpacityTween.start()
 	else:
-		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.4), 0.7, Tween.TRANS_EXPO)
+		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.5), 0.7, Tween.TRANS_EXPO)
 		$OpacityTween.start()
+
+func set_highlight(h):
+	if h:
+		self.texture = blue_circle
+	else:
+		self.texture = black_circle
 
 func _draw():
 	var angle = (2 * PI) / Globals.nb_points
@@ -42,7 +51,8 @@ func _on_Label_gui_input(event):
 
 
 func _on_mouse_entered():
-	emit_signal("mouse_entred_point", self)
+	if not Globals.linking:
+		emit_signal("mouse_entred_point", self)
 
 
 func _on_mouse_exited():
