@@ -135,6 +135,7 @@ func _hide_point(item):
 	var point = _get_point_by_label(item.label, disabled)
 	if point == null:
 		point = _get_point_by_label(item.label, points)
+	if point == null: return
 	if point.hidden:
 		disabled.remove_child(point)
 		points.add_child(point)
@@ -201,7 +202,7 @@ func _is_accessible(src, dest, excluded):
 func _get_links(point):
 	var result = []
 	for l in links.get_children():
-		if l.start == point or l.end == point:
+		if (not l is Sprite) and (l.start == point or l.end == point):
 			result.append(l)
 	for l in  disabled.get_children():
 		if (not l is Sprite) and (l.start == point or l.end == point):
@@ -211,9 +212,9 @@ func _get_links(point):
 func _get_next_points(point):
 	var result = []
 	for l in links.get_children():
-		if l.start == point:
+		if (not l is Sprite) and (l.start == point):
 			result.append(l.end)
-		elif l.end == point:
+		elif (not l is Sprite) and (l.end == point):
 			result.append(l.start)
 	return result
 
@@ -229,6 +230,9 @@ func _reset_highlights():
 		p.set_highlight(false)
 
 func _on_articulation_pressed():
+	for p in poointList.get_children():
+		if p.is_hidden():
+			p.set_hide(false)
 	for p in get_articulation_points():
 		p.set_highlight(true)
 
