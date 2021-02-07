@@ -66,6 +66,8 @@ func _add_point(label):
 	
 	var item = PointItem.instance()
 	item.label = label
+	item.connect("delete_point", self, "_remove_point")
+	item.connect("hide_point", self, "_hide_point")
 	poointList.add_child(item)
 
 func _add_link(start, end):
@@ -78,11 +80,25 @@ func _add_link(start, end):
 	link.end = end
 	links.add_child(link)
 
-func _remove_point():
+func _remove_point(point):
 	_reset_highlights()
+	for p in points.get_children():
+		if p.label == point.label:
+			p.queue_free()
+			for l in _get_links(p):
+				l.queue_free()
+			for p1 in points.get_children():
+				if p1 != p and p1.index > p.index:
+					p1.index -= 1
+			break
+	point.queue_free()
+	Globals.nb_points -= 1
 
 func _remove_link(link):
 	_reset_highlights()
+
+func _hide_point(point):
+	pass
 
 func _on_start_link(start_point):
 	Globals.linking = true
