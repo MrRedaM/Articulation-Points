@@ -231,3 +231,14 @@ func _reset_highlights():
 func _on_articulation_pressed():
 	for p in get_articulation_points():
 		p.set_highlight(true)
+
+
+func _on_delete_all_points_pressed():
+	for p in poointList.get_children():
+		_remove_point(p)
+	Globals.id_count = 0
+
+
+func _on_delete_all_links_pressed():
+	for l in linkList.get_children():
+		_remove_link(l)
