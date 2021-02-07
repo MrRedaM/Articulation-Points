@@ -5,6 +5,7 @@ const black_circle = preload("res://assets/circle.png")
 
 export var label : String
 var index
+var hidden = false
 
 signal start_link(point)
 signal apply_link(point)
@@ -18,6 +19,17 @@ func set_focus(is_focused):
 		$OpacityTween.start()
 	else:
 		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.5), 0.7, Tween.TRANS_EXPO)
+		$OpacityTween.start()
+
+func set_visible(visible):
+	var current_alpha = modulate.a
+	if visible:
+		hidden = false
+		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 1), 0.7, Tween.TRANS_EXPO)
+		$OpacityTween.start()
+	else:
+		hidden = true
+		$OpacityTween.interpolate_property(self, "modulate", Color(1, 1, 1, current_alpha), Color(1, 1, 1, 0.2), 0.7, Tween.TRANS_EXPO)
 		$OpacityTween.start()
 
 func set_highlight(h):

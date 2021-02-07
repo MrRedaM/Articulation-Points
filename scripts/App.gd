@@ -97,8 +97,34 @@ func _remove_point(point):
 func _remove_link(link):
 	_reset_highlights()
 
-func _hide_point(point):
-	pass
+func _hide_point(item):
+	var point = _get_point_by_label(item.label, disabled)
+	if point == null:
+		point = _get_point_by_label(item.label, points)
+	if point.hidden:
+		disabled.remove_child(point)
+		points.add_child(point)
+		for l in disabled.get_children():
+			if (not l is Sprite) and (l.start == point or l.end == point):
+				if not (l.start.hidden and l.end.hidden):
+					disabled.remove_child(l)
+					links.add_child(l)
+					l.set_visible(true)
+		point.set_visible(true)
+	else:
+		points.remove_child(point)
+		disabled.add_child(point)
+		for l in _get_links(point):
+			links.remove_child(l)
+			disabled.add_child(l)
+			l.set_visible(false)
+		point.set_visible(false)
+
+
+func _get_point_by_label(label, from):
+	for p in from.get_children():
+		if p is Sprite and p.label == label:
+			return p
 
 func _on_start_link(start_point):
 	Globals.linking = true
