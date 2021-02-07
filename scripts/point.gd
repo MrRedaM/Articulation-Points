@@ -39,6 +39,8 @@ func set_highlight(h):
 		self.texture = black_circle
 
 func _draw():
+	if Globals.nb_points == 0:
+		return
 	var angle = (2 * PI) / Globals.nb_points
 	position = Globals.center + Globals.radius.rotated(angle * index)
 	pass
