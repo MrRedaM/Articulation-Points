@@ -5,11 +5,13 @@ var nb_points : int = 0
 const Point = preload("res://scenes/point.tscn") 
 const PointItem = preload("res://scenes/PointElement.tscn")
 const Link = preload("res://scenes/Link.tscn")
+const LinkItem = preload("res://scenes/LinkItem.tscn")
 
 onready var points = $Graph/Points
 onready var poointList = $HBoxContainer/Panel/MarginContainer/VBoxContainer/Panel/ScrollContainer/PointList
 onready var links = $Graph/Links
 onready var disabled = $Graph/Disabled
+onready var linkList = $HBoxContainer/Panel2/MarginContainer/VBoxContainer2/Panel/ScrollContainer/LinksList
 
 func _draw():
 	if Globals.linking:
@@ -52,23 +54,25 @@ func _is_accessible_from_all(point):
 			return false
 	return true
 
-func _add_point(label):
+func _add_point():
 	_reset_highlights()
 	var point = Point.instance()
-	point.label = label
+	point.label = Globals.id_count
 	point.index = Globals.nb_points
 	point.connect("start_link", self, "_on_start_link")
 	point.connect("apply_link", self, "_on_apply_link")
 	point.connect("mouse_entred_point", self, "_on_mouse_entred_point")
 	point.connect("mouse_exited_point", self, "_on_mouse_exited_point")
 	points.add_child(point)
-	Globals.nb_points += 1
 	
 	var item = PointItem.instance()
-	item.label = label
+	item.label = Globals.id_count
 	item.connect("delete_point", self, "_remove_point")
 	item.connect("hide_point", self, "_hide_point")
 	poointList.add_child(item)
+	
+	Globals.nb_points += 1
+	Globals.id_count += 1
 
 func _add_link(start, end):
 	_reset_highlights()
@@ -79,6 +83,12 @@ func _add_link(start, end):
 	link.start = start
 	link.end = end
 	links.add_child(link)
+	
+	var item = LinkItem.instance()
+	item.start = start
+	item.end = end
+	item.connect("delete_link", self, "_remove_link")
+	linkList.add_child(item)
 
 func _remove_point(point):
 	_reset_highlights()
@@ -86,7 +96,8 @@ func _remove_point(point):
 		if p.label == point.label:
 			p.queue_free()
 			for l in _get_links(p):
-				l.queue_free()
+			#	l.queue_free()
+				_remove_link(l)
 			for p1 in points.get_children():
 				if p1 != p and p1.index > p.index:
 					p1.index -= 1
@@ -94,8 +105,24 @@ func _remove_point(point):
 	point.queue_free()
 	Globals.nb_points -= 1
 
-func _remove_link(link):
+func _remove_link(item):
 	_reset_highlights()
+	_get_link(item.start, item.end).queue_free()
+	#item.queue_free()
+	for i in linkList.get_children():
+		if (i.start == item.start and i.end == item.end) or (i.start == item.end and i.end == item.start):
+			i.queue_free()
+
+
+func _get_link(start, end):
+	for l in links.get_children():
+		if (l.start == start and l.end == end) or (l.end == start and l.start == end):
+			return l
+	for l in disabled.get_children():
+		if (not l is Sprite):
+			if (l.start == start and l.end == end) or (l.end == start and l.start == end):
+				return l
+	return null
 
 func _hide_point(item):
 	var point = _get_point_by_label(item.label, disabled)
@@ -180,7 +207,7 @@ func _get_next_points(point):
 	return result
 
 func _on_add_point_pressed():
-	_add_point(Globals.nb_points)
+	_add_point()
 
 func _update_globals():
 	Globals.center = Vector2(get_viewport_rect().size.x / 2, get_viewport_rect().size.y / 2)
