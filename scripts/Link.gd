@@ -5,6 +5,7 @@ const Point = preload("res://scenes/point.tscn")
 var start
 var end
 var hidden
+var hover = false
 
 func set_focus(is_focused):
 	var current_alpha = modulate.a
@@ -27,7 +28,12 @@ func set_visible(visible):
 		$OpacityTween.start()
 
 func _draw():
-	draw_line(start.position, end.position, Color.black, 8.00, true)
+	var color
+	if hover:
+		color = Color.red
+	else:
+		color = Color.black
+	draw_line(start.position, end.position, color, 8.00, true)
 
 func _process(delta):
 	update()

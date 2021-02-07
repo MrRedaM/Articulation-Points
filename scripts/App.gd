@@ -79,6 +79,8 @@ func _add_link(start, end):
 	for l in links.get_children():
 		if (l.start == start and l.end == end) or (l.start == end and l.end == start):
 			return
+	if start == end:
+		return
 	var link = Link.instance()
 	link.start = start
 	link.end = end
@@ -88,21 +90,21 @@ func _add_link(start, end):
 	item.start = start
 	item.end = end
 	item.connect("delete_link", self, "_remove_link")
+	item.connect("hover_link_item", self, "_hover_link_item")
+	item.connect("exit_link_item", self, "_exit_link_item")
 	linkList.add_child(item)
 
 func _remove_point(point):
 	_reset_highlights()
-	for p in points.get_children():
-		if p.label == point.label:
-			p.queue_free()
-			for l in _get_links(p):
-			#	l.queue_free()
-				_remove_link(l)
-			for p1 in points.get_children():
-				if p1 != p and p1.index > p.index:
-					p1.index -= 1
-			break
+	var p = _get_point_by_label(point.label, points)
+	if p == null: p = _get_point_by_label(point.label, disabled)
+	for l in _get_links(p):
+		_remove_link(l)
+	for p1 in points.get_children():
+		if p1 != p and p1.index > p.index:
+			p1.index -= 1
 	point.queue_free()
+	p.queue_free()
 	Globals.nb_points -= 1
 
 func _remove_link(item):
@@ -113,6 +115,11 @@ func _remove_link(item):
 		if (i.start == item.start and i.end == item.end) or (i.start == item.end and i.end == item.start):
 			i.queue_free()
 
+func _hover_link_item(item):
+	_get_link(item.start, item.end).hover = true
+
+func _exit_link_item(item):
+	_get_link(item.start, item.end).hover = false
 
 func _get_link(start, end):
 	for l in links.get_children():
@@ -152,6 +159,7 @@ func _get_point_by_label(label, from):
 	for p in from.get_children():
 		if p is Sprite and p.label == label:
 			return p
+	return null
 
 func _on_start_link(start_point):
 	Globals.linking = true
@@ -194,6 +202,9 @@ func _get_links(point):
 	var result = []
 	for l in links.get_children():
 		if l.start == point or l.end == point:
+			result.append(l)
+	for l in  disabled.get_children():
+		if (not l is Sprite) and (l.start == point or l.end == point):
 			result.append(l)
 	return result
 
