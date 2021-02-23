@@ -10,7 +10,7 @@
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.988235, 0.988235, 0.988235, 1 )
 
-[sub_resource type="StyleBoxFlat" id=3]
+[sub_resource type="StyleBoxFlat" id=2]
 content_margin_left = 16.0
 content_margin_right = 16.0
 content_margin_top = 4.0
@@ -22,7 +22,7 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 shadow_size = 2
 
-[sub_resource type="StyleBoxFlat" id=2]
+[sub_resource type="StyleBoxFlat" id=3]
 content_margin_left = 16.0
 content_margin_right = 16.0
 content_margin_top = 4.0
@@ -137,8 +137,8 @@ margin_top = 697.0
 margin_right = 225.0
 margin_bottom = 736.0
 size_flags_horizontal = 3
-custom_styles/hover = SubResource( 3 )
-custom_styles/normal = SubResource( 2 )
+custom_styles/hover = SubResource( 2 )
+custom_styles/normal = SubResource( 3 )
 custom_fonts/font = ExtResource( 4 )
 custom_colors/font_color = Color( 0.878431, 0.937255, 0.960784, 1 )
 custom_colors/font_color_hover = Color( 0.239216, 0.682353, 0.913725, 1 )
