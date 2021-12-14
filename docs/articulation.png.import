@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/visible.png-26e1637b6eccfa1a14c90bdd741bb1a9.stex"
+path="res://.import/articulation.png-ea8d44c6fe0ebe2b574b32d3b3b23003.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/visible.png"
-dest_files=[ "res://.import/visible.png-26e1637b6eccfa1a14c90bdd741bb1a9.stex" ]
+source_file="res://docs/articulation.png"
+dest_files=[ "res://.import/articulation.png-ea8d44c6fe0ebe2b574b32d3b3b23003.stex" ]
 
 [params]
 
