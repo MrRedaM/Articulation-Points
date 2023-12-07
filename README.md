@@ -1,3 +1,3 @@
 # Articulation-Points
 
-Link : https://mrredam.github.io/Articulation-Points/
+Link : https://redamorsli.github.io/Articulation-Points/
